@@ -16,27 +16,6 @@ import flippertoproxmark3andback.Key;
 public class NfcDumpConverter {
     
     public static void main(String[] args) throws IOException, ParseException {
-        /*ArrayList<Integer> t = new ArrayList<>();
-        for (int i = 0; i < 64; i++) {
-            System.out.println(i + " % " + 4 + " = " + (i%4));
-            if (i % 4 == 3) {
-                t.add(i);
-            }
-        }
-        System.out.println();
-        for (Integer f : t) {
-            System.out.println(f);
-        }*/
-        //SectorKey sectorKey = new SectorKey(new Key("F662248E7E89", KeyType.A), new Key("5EC39B022F2B", KeyType.B), new int[]{ 0x78,0x77,0x88,0x00 }, 0);
-        //file.createNewFile();
-        //Nfc nfc = new Nfc(FileType.flipper, new File("Hotel_cardw2.nfc"));
-        //nfc.exportAsProxmark3Dump();
-
-        // java -jar flippertoproxmark3andback.jar help
-
-        //args = new String[]{"convert", "\"Charlie_card.nfc\"", "export", "\"Test.json\""};
-        //args = new String[]{"convert", "\"Charlie_card.nfc\"", "export", "default", "json"};
-
         for (String s : args) {
             System.out.println(s);
         }
@@ -84,13 +63,8 @@ public class NfcDumpConverter {
             
         }
 
-        // java -jar flippertoproxmark3andback.jar convert file "flipper.nfc" | "proxmark3-dump.json" format proxmark3(.json) | flipperzero(.nfc) export "enter-file-name-here"
-        // or
         // java -jar flippertoproxmark3andback.jar convert "flipper.nfc" | "proxmark3-dump.json" export "enter-file-name-here-with-extension-you-want-to-convert-to" (Either .nfc or .json)
 
-        //Nfc nfc2 = new Nfc(FileType.proxmark3, new File("hf-mf-B4CE3F1B-dump-001.json"));
-        //nfc2.exportAsFlipperNfc();
-        //nfc.exportAsFlipperNfc();
     }
 
     private static void help() {
