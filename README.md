@@ -25,6 +25,6 @@ Import and export files have to have either .nfc or .json as the file extension 
 
 ```
 Some examples would be:
-java -jar flippertoproxmark3andback.jar convert "flipper.nfc" export "proxmark3-dump.json
+java -jar flippertoproxmark3andback.jar convert "flipper.nfc" export "proxmark3-dump.json"
 java -jar flippertoproxmark3andback.jar convert "proxmark3-dump.json" export default nfc
 ```
