@@ -10,8 +10,6 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
-//import java.util.ArrayList;
-
 import flippertoproxmark3andback.Key;
 public class NfcDumpConverter {
     
@@ -19,16 +17,29 @@ public class NfcDumpConverter {
         for (String s : args) {
             System.out.println(s);
         }
-        if (args.length <= 0 || args[0].equals("help")) {//Note "" in command line just don't exist after inputing them
+        //args = new String[]{"convert", "FlipperZero-B4CE3F1B.nfc", "export", "default", "json"};
+        //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};
+        //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
+        //args = new String[]{"convert", "FlipperZero-046E0D85F0E3E4-dump.json", "export", "default", "nfc"};
+        runProgramWithArguments(args);
+
+       
+
+        // java -jar flippertoproxmark3andback.jar convert "flipper.nfc" | "proxmark3-dump.json" export "enter-file-name-here-with-extension-you-want-to-convert-to" (Either .nfc or .json)
+
+    }
+    private static void runProgramWithArguments(String[] args) throws ParseException, IOException {
+         if (args.length <= 0 || args[0].equals("help")) {//Note "" in command line just don't exist after inputing them
             help();
         } else if (args[0].equals("convert") ) {
             System.out.println("Convert!");
             
             System.out.println(args[1] + "!");
             String filePathInput = args[1].replaceAll("\"", "");
-            Nfc nfc = new Nfc();
+            NFC nfc = new NFC();
             if (new File(filePathInput).exists()) {
-                nfc = new Nfc(Constants.fileExtensionToFileType.get(filePathInput.substring(filePathInput.indexOf(".")+1)), new File(filePathInput));
+                nfc = NFCFactory.createNFCFromFile(new File(filePathInput));
+                //nfc = new MifareClassic(new File(filePathInput));
             } else {
                 System.out.println("Invalid input file path");
                 System.exit(0);
@@ -62,9 +73,6 @@ public class NfcDumpConverter {
             }
             
         }
-
-        // java -jar flippertoproxmark3andback.jar convert "flipper.nfc" | "proxmark3-dump.json" export "enter-file-name-here-with-extension-you-want-to-convert-to" (Either .nfc or .json)
-
     }
 
     private static void help() {

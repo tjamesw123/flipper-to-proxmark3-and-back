@@ -6,6 +6,9 @@ public final class Constants {
     public enum NfcType {
         mifareclassic1k, mifareclassic4k, mifareultralight, UID, ISO15693
     }
+    public enum MifareClassicType {
+        MFC1k, MFC4k
+    }
     public enum FileType {
         flipper,
         proxmark3
@@ -26,13 +29,13 @@ public final class Constants {
     put("ISO15693", null);//Don't know what the null types are yet
     put("UID", null);
     put("Mifare Classic", "mfcard");
-    put("Mifare Ultralight", null);
+    put("Mifare Ultralight", "nfu");
 }};
     public static HashMap<String, String> proxmarkFiletypeToFlipperDevice = new HashMap<String, String>() {{
     //put("null", ISO15693);//Don't know what the null types are yet
     //put("null", UID);
     put("mfcard", "Mifare Classic");
-    //put("null", Mifare Ultralight);
+    put("mfu", "Mifare Ultralight");
 }};
     public static HashMap<String, NfcType> nfcStrToNfcType = new HashMap<String, NfcType>() {{
     //put("null", ISO15693);//Don't know what the null types are yet
@@ -41,6 +44,19 @@ public final class Constants {
     put("Mifare Classic 4K", NfcType.mifareclassic4k);
     //put("null", Mifare Ultralight);
 }};
+public static HashMap<String, MifareClassicType> mfcStrToMfcType = new HashMap<String, MifareClassicType>() {{
+    put("Mifare Classic 1K", MifareClassicType.MFC1k);
+    put("Mifare Classic 4K", MifareClassicType.MFC4k);
+}};
+public static HashMap<MifareClassicType, String> mfcTypeToProxmark3FileType = new HashMap<MifareClassicType, String>() {{
+    put(MifareClassicType.MFC1k, "mfcard");
+    put(MifareClassicType.MFC4k, "mfcard");
+}};
+
+public static HashMap<MifareClassicType, String> mfcTypeToFlipperDevice = new HashMap<MifareClassicType, String>() {{
+    put(MifareClassicType.MFC1k, "Mifare Classic 1K");
+    put(MifareClassicType.MFC4k, "Mifare Classic 4K");
+}};
 
     
     public static HashMap<NfcType, String> nfcTypeToProxmarkFiletype = new HashMap<NfcType, String>() {{
@@ -48,7 +64,7 @@ public final class Constants {
     put(NfcType.UID, null);
     put(NfcType.mifareclassic1k, "mfcard");
     put(NfcType.mifareclassic4k, "mfcard");
-    put(NfcType.mifareultralight, null);
+    put(NfcType.mifareultralight, "");
 }};
     public static HashMap<NfcType, String> nfcTypeToFlipperDevice = new HashMap<NfcType, String>() {{
     put(NfcType.ISO15693, "ISO15693");//Don't know what the null types are yet
@@ -83,5 +99,56 @@ public static HashMap<String, String> trailBitsToCondition = new HashMap<String,
     put("101", "read ACCESS by AB; write ACCESS by B");
     put("111", "read ACCESS by AB");
 }};
+
+public static String arrToHexString(int[] arr, boolean spacing, boolean toUpper) {// turns a list of ints into 2 character strings with the int in hexadecimal format
+    String result = "";
+    for (int i = 0; i < arr.length; i++) {
+        if (spacing) {
+            if (i == arr.length-1) {
+                result += String.format("%2s", Integer.toHexString(arr[i])).replaceAll(" ", "0");
+            } else {
+                result += String.format("%2s", Integer.toHexString(arr[i])).replaceAll(" ", "0") + " ";
+            }
+        } else {
+            result += String.format("%2s", Integer.toHexString(arr[i])).replaceAll(" ", "0");
+        }
+    }
+    if (toUpper) {
+        result = result.toUpperCase();
+    }
+    return result;
+}
+public static String intToHexString(int num, boolean toUpper) {// turns a single int into a 2 character string with the int in hexadecimal format
+    String temp = String.format("%2s", Integer.toHexString(num)).replaceAll(" ", "0");
+    if (toUpper) {
+        temp = temp.toUpperCase();
+    }
+    return temp;
+}
+public static int hexStrToInt(String hexString) {
+    return Integer.decode("0x" + hexString);
+}
+public static int[] hexStrToIntArr(String hex) {
+    int[] result = new int[hex.length()/2];
+    for (int i = 0; i < hex.length(); i = i+2) {
+        result[i/2] = Integer.decode("0x" + hex.substring(i, i+2));
+    }
+    return result;
+}
+public static int[] hexStrArrtoIntArr(String[] hexStrs) {
+    String tempString = "";
+    for (String s : hexStrs) {
+        tempString += s;
+    }
+    return hexStrToIntArr(tempString);
+}
+public static int[] flipperToProxmarkFormatBlockLine(int[] line) {
+    int[] newLine = new int[]{line[10], line[11], line[12], line[13], line[14], line[15], line[6], line[7], line[8], line[9], line[0], line[1], line[2], line[3], line[4], line[5]};
+    return newLine;
+}
+public static int[] proxmarkToFlipperFormatBlockLine(int[] line) {
+    int[] newLine = new int[]{line[10], line[11], line[12], line[13], line[14], line[15], line[6], line[7], line[8], line[9], line[0], line[1], line[2], line[3], line[4], line[5]};
+    return newLine;
+}
 
 }
