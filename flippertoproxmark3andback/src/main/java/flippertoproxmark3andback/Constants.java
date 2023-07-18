@@ -54,8 +54,8 @@ public static HashMap<MifareClassicType, String> mfcTypeToProxmark3FileType = ne
 }};
 
 public static HashMap<MifareClassicType, String> mfcTypeToFlipperDevice = new HashMap<MifareClassicType, String>() {{
-    put(MifareClassicType.MFC1k, "Mifare Classic 1K");
-    put(MifareClassicType.MFC4k, "Mifare Classic 4K");
+    put(MifareClassicType.MFC1k, "Mifare Classic");
+    put(MifareClassicType.MFC4k, "Mifare Classic");
 }};
 
     

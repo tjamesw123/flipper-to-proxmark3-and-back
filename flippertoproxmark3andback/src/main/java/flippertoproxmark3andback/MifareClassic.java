@@ -27,7 +27,6 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
     public MifareClassic(File file) throws FileNotFoundException, org.json.simple.parser.ParseException {
         super(file);
         System.out.println("MifareClassic!");
-        
         if (FileType.flipper == this.getImportFileType()) {
             Scanner scan = new Scanner(file);
             for (int i = 0; i < 9; i++) {
@@ -35,80 +34,113 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
             }
             //System.out.println(scan.nextLine());// Mifare Classic specific data
             scan.nextLine();
-            String mifareClassicType = scan.nextLine().substring(21);
-            System.out.println(mifareClassicType);
+            String mifareClassicTypeStr = scan.nextLine().substring(21);
+            //System.out.println(mifareClassicTypeStr);
             //System.out.println(mifareClassicType);
             //System.out.println(scan.nextLine());//Data format version: 2 TODO: keep up with the data format versions
             scan.nextLine();
             //System.out.println(scan.nextLine());// Mifare Classic blocks, '??' means unknown data //gotta have all the keys I guess as a note
             scan.nextLine();
-            if (mifareClassicType.equals("1K")) {
+            if (mifareClassicTypeStr.equals("1K")) {
+                int sectorKeySector = 0;
                 this.blocks = new int[64][16];
+                //System.out.println(blocks.length);
                 this.sectorKeys = new SectorKey[16];
                 this.mifareClassicType = MifareClassicType.MFC1k;
-            } else if (mifareClassicType.equals("4K")) {
-                this.blocks = new int[256][16];
-                this.sectorKeys = new SectorKey[64];
-                this.mifareClassicType = MifareClassicType.MFC4k;
-            }
-            int sectorKeySector = 0;
-            for (int i = 0; i < blocks.length; i++) {
-                String temp = scan.nextLine();
-                String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
-                //System.out.println();
-                // for (String str : blocksStr) {
-                //     System.out.print(str + " ");
-                // }
-                 
-                int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
+                for (int i = 0; i < blocks.length; i++) {
+                    String temp = scan.nextLine();
+                    String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
+                    //System.out.println();
+                    // for (String str : blocksStr) {
+                    //     System.out.print(str + " ");
+                    // }
+                    
+                    int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
                     if (i % 4 == 3) {
                         this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
                         sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
                         sectorKeySector++;
                     } else {
                         this.blocks[i] = line;
+                    }
+                } 
+            } else if (mifareClassicTypeStr.equals("4K")) {
+                int sectorKeySector = 0;
+                this.blocks = new int[256][16];
+                //System.out.println(blocks.length);
+                this.sectorKeys = new SectorKey[40];
+                this.mifareClassicType = MifareClassicType.MFC4k;
+                for (int i = 0; i < blocks.length; i++) {
+                    String temp = scan.nextLine();
+                    String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
+                    //System.out.println();
+                    // for (String str : blocksStr) {
+                    //     System.out.print(str + " ");
+                    // }
+                    
+                    int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
+                    if (sectorKeySector > 31) {
+                        if (i % 16 == 15) {
+                            this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                            sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
+                            sectorKeySector++;
+                        } else {
+                            this.blocks[i] = line;
                         }
+                    } else {
+                        if (i % 4 == 3) {
+                            this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                            sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
+                            sectorKeySector++;
+                        } else {
+                            this.blocks[i] = line;
+                        }
+                    }
+                }
             }
         } else {
             JSONParser jsonParser = new JSONParser();
+                try (FileReader reader = new FileReader(file))
+                {
+                    //Read JSON file
+                    Object obj = jsonParser.parse(reader);
+                    //System.out.println("Work");
+                    JSONObject nfcArray = (JSONObject) obj;
+                    HashMap<String, String> hashMap = (HashMap) nfcArray.get("Card");
+                    HashMap<String, String> hashMapBlocks = (HashMap) nfcArray.get("blocks");
+                    String nfcStr = Constants.proxmarkFiletypeToFlipperDevice.get(nfcArray.get("FileType"));
+                    //System.out.println(Constants.sakToMifareClassicType.get(hashMap.get("SAK")));
+                    this.mifareClassicType = Constants.mfcStrToMfcType.get(nfcStr + " " + Constants.sakToMifareClassicType.get(hashMap.get("SAK")));
+                    if (MifareClassicType.MFC1k == this.mifareClassicType) {//Here
+                        System.out.println("1K!");
+                        blocks = new int[64][16];
+                        sectorKeys = new SectorKey[16];
+                    } else if (MifareClassicType.MFC4k == this.mifareClassicType) {//Also a work in progress
+                        System.out.println("4K!");
+                        blocks = new int[256][16];
+                        sectorKeys = new SectorKey[40];
+                    }
+                    for (int i = 0; i < blocks.length; i++) {
+                        this.blocks[i] = Constants.hexStrToIntArr((String) hashMapBlocks.get("" + i));
+                    }
+                    JSONObject sectorKeysObject = (JSONObject) nfcArray.get("SectorKeys");
+                    
+                    for (int i = 0; i < sectorKeys.length; i++) {
+                        JSONObject sectorKeyFinal = (JSONObject) sectorKeysObject.get(""+i);
+                        sectorKeys[i] = new SectorKey(  new Key(Constants.hexStrToIntArr((String) sectorKeyFinal.get("KeyA")), KeyType.A), //Kind of avoids reading though the whole json by just reusing the id system used for importing flipper nfcs
+                                                        new Key(Constants.hexStrToIntArr((String)sectorKeyFinal.get("KeyB")), KeyType.B), 
+                                                        Constants.hexStrToIntArr((String)sectorKeyFinal.get("AccessConditions")), i);
 
-            try (FileReader reader = new FileReader(file))
-            {
-                //Read JSON file
-                Object obj = jsonParser.parse(reader);
-                
-                JSONObject nfcArray = (JSONObject) obj;
-                HashMap<String, String> hashMap = (HashMap) nfcArray.get("Card");
-                HashMap<String, String> hashMapBlocks = (HashMap) nfcArray.get("blocks");
-                String nfcStr = Constants.proxmarkFiletypeToFlipperDevice.get(nfcArray.get("FileType"));
-                this.mifareClassicType = Constants.mfcStrToMfcType.get(nfcStr + " " + Constants.sakToMifareClassicType.get(hashMap.get("SAK")));
-                if (MifareClassicType.MFC1k == mifareClassicType) {
-                    blocks = new int[64][16];
-                    sectorKeys = new SectorKey[16];
-                } else if (MifareClassicType.MFC4k == mifareClassicType) {//Also a work in progress
-                    blocks = new int[256][16];
-                    sectorKeys = new SectorKey[64];
+                    }
+                    reader.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                for (int i = 0; i < blocks.length; i++) {
-                    this.blocks[i] = Constants.hexStrToIntArr((String) hashMapBlocks.get("" + i));
-                }
-                JSONObject sectorKeysObject = (JSONObject) nfcArray.get("SectorKeys");
-                
-                for (int i = 0; i < sectorKeys.length; i++) {
-                    JSONObject sectorKeyFinal = (JSONObject) sectorKeysObject.get(""+i);
-                    sectorKeys[i] = new SectorKey(  new Key(Constants.hexStrToIntArr((String) sectorKeyFinal.get("KeyA")), KeyType.A), //Kind of avoids reading though the whole json by just reusing the id system used for importing flipper nfcs
-                                                    new Key(Constants.hexStrToIntArr((String)sectorKeyFinal.get("KeyB")), KeyType.B), 
-                                                    Constants.hexStrToIntArr((String)sectorKeyFinal.get("AccessConditions")), i);
-
-                }
-                reader.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
+
     public void exportAsFlipperNfc(String customName) throws IOException {
         File flipperNfcFile;
         if (customName.equals("")) {
@@ -117,7 +149,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
             flipperNfcFile = new File(customName + ".nfc");
         }
         PrintStream fileStream = new PrintStream(flipperNfcFile);
-        fileStream.println("Filetype: Flipper NFC Device");//Placeholders maybe for future verisons
+        fileStream.println("Filetype: Flipper NFC device");//Placeholders maybe for future verisons
         fileStream.println("Version: 3");
         fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic or ISO15693");
         fileStream.println("Device type: " + Constants.mfcTypeToFlipperDevice.get(mifareClassicType));
@@ -134,12 +166,24 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         }
         fileStream.println("Data format version: 2");
         fileStream.println("# Mifare Classic blocks, \'??\' means unknown data");
-        for (int i = 0; i < blocks.length; i++) {
-            if (i % 4 == 3) {
-                fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
+        int sectors = 0;
+        for (int i = 0; i < this.blocks.length; i++) {
+            if (i > 143 || sectors > 31) {
+                if (i % 16 == 15) {
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
+                    sectors++;
+                } else {
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
+                }
             } else {
-                fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
+                if (i % 4 == 3) {
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
+                    sectors++;
+                } else {
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
+                }
             }
+            
         }
         fileStream.close();
     }

@@ -36,7 +36,7 @@ public class NFC {
         this.importFileType = Constants.fileExtensionToFileType.get(path.substring(path.indexOf(".")+1));
         FileType fileType = importFileType;
         System.out.println("NFC!");
-        System.out.println(importFileType);
+        //System.out.println(importFileType);
 
         
         if (FileType.flipper == fileType) {
@@ -91,7 +91,7 @@ public class NFC {
             flipperNfcFile = new File(customName + ".nfc");
         }
         PrintStream fileStream = new PrintStream(flipperNfcFile);
-        fileStream.println("Filetype: Flipper NFC Device");//Placeholders maybe for future verisons
+        fileStream.println("Filetype: Flipper NFC device");//Placeholders maybe for future verisons
         fileStream.println("Version: 3");
         fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic or ISO15693");
         fileStream.println("Device type: " + "UID");

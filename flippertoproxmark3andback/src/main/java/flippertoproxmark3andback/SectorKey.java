@@ -75,13 +75,24 @@ public class SectorKey {//Currently tuned for mifare 1k cards
 
         String[][] accessConditionTextTemp = new String[5][2];
         for (int i = 0; i < 4; i++) {
-            if (i != 3) {
-                accessConditionTextTemp[i][0] = "block" + ((sector*4)+i);
-                accessConditionTextTemp[i][1] = Constants.accessBitsToConditions.get(finalBinaryStrings[i]);
+            if (sector > 31) {
+                if (i != 3) {
+                    accessConditionTextTemp[i][0] = "block" + ((31*4)+((sector-31)*16)+i);
+                    accessConditionTextTemp[i][1] = Constants.accessBitsToConditions.get(finalBinaryStrings[i]);
+                } else {
+                    accessConditionTextTemp[i][0] = "block" + ((31*4)+((sector-31)*16)+i);
+                    accessConditionTextTemp[i][1] = Constants.trailBitsToCondition.get(finalBinaryStrings[i]);
+                }
             } else {
-                accessConditionTextTemp[i][0] = "block" + ((sector*4)+i);
-                accessConditionTextTemp[i][1] = Constants.trailBitsToCondition.get(finalBinaryStrings[i]);
+                if (i != 3) {
+                    accessConditionTextTemp[i][0] = "block" + ((sector*4)+i);
+                    accessConditionTextTemp[i][1] = Constants.accessBitsToConditions.get(finalBinaryStrings[i]);
+                } else {
+                    accessConditionTextTemp[i][0] = "block" + ((sector*4)+i);
+                    accessConditionTextTemp[i][1] = Constants.trailBitsToCondition.get(finalBinaryStrings[i]);
+                }
             }
+            
             
         }
 
