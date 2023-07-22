@@ -57,8 +57,14 @@ public class RFIDCard extends NFC {
                 
                 JSONObject nfcArray = (JSONObject) obj;
                 HashMap<String, String> hashMap = (HashMap) nfcArray.get("Card");
-                this.SAK = Constants.hexStrToInt(hashMap.get("SAK"));
-                this.ATQA = Constants.hexStrToIntArr(hashMap.get("ATQA"));
+                if (hashMap.containsKey("SAK")) {
+                    this.SAK = Constants.hexStrToInt(hashMap.get("SAK"));
+                    this.ATQA = Constants.hexStrToIntArr(hashMap.get("ATQA"));
+                } else {//Ultralight
+                    this.SAK = Constants.hexStrToInt("00");
+                    this.ATQA = new int[]{Constants.hexStrToInt("44"), Constants.hexStrToInt("00")};
+                }
+                
                 reader.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -82,8 +88,8 @@ public class RFIDCard extends NFC {
         fileStream.println("# UID is common for all formats");
         fileStream.println("UID: " + Constants.arrToHexString(this.getUID(), true, true));
         fileStream.println("# ISO14443 specific fields");
-        fileStream.println("ATQA: " + Constants.intToHexString(ATQA[1], true) + " " + Constants.intToHexString(ATQA[0], true));
-        fileStream.println("SAK: " + Constants.intToHexString(SAK, true));
+        fileStream.println("ATQA: " + Constants.intToHexString(ATQA[1], true, 2) + " " + Constants.intToHexString(ATQA[0], true, 2));
+        fileStream.println("SAK: " + Constants.intToHexString(SAK, true, 2));
         fileStream.close();
 
 
@@ -98,7 +104,7 @@ public class RFIDCard extends NFC {
         HashMap<String, String> card = new HashMap<String, String>();
         card.put("UID", Constants.arrToHexString(this.getUID(), false, true));
         card.put("ATQA", Constants.arrToHexString(ATQA, false, true));
-        card.put("SAK", Constants.intToHexString(SAK, true));
+        card.put("SAK", Constants.intToHexString(SAK, true, 2));
         proxmarkJson.put("Card", card);
 
         File proxmarkJsonFile;

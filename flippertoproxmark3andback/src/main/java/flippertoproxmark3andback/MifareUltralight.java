@@ -15,18 +15,21 @@ import org.json.simple.parser.JSONParser;
 import flippertoproxmark3andback.Constants.FileType;
 import flippertoproxmark3andback.Constants.KeyType;
 import flippertoproxmark3andback.Constants.MifareClassicType;
+import flippertoproxmark3andback.Constants.MifareUltralightType;
 
 public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
     private int[][] blocks;//Saved in Proxmark format (Note: remember to switch to flipper format for flipper stuff)
-    private SectorKey[] sectorKeys;
-    private MifareClassicType mifareClassicType;
-    //30 60 20 6F 5B 0A 78 77 88 C1 F1 B9 F5 66 9C C8
-    //0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+    private int[] signature;
+    private int[] version;
+    private int[] counter;
+    private int[] tearing;
+    private MifareUltralightType mifareUltralightType;
+    //Second to last block changes based on if the tag is flipper zero or proxmark3 in origin
+    // FF FF FF FF (Flipper Zero) vs. 00 00 00 00 (proxmark3)
 
     public MifareUltralight(File file) throws FileNotFoundException, org.json.simple.parser.ParseException {
         super(file);
         System.out.println("MifareUltralight!");
-        
         if (FileType.flipper == this.getImportFileType()) {
             Scanner scan = new Scanner(file);
             for (int i = 0; i < 9; i++) {
@@ -34,53 +37,34 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
             }
             //System.out.println(scan.nextLine());// Mifare Ultralight specific data
             scan.nextLine();
-            String mifareClassicType = scan.nextLine().substring(21);
-            System.out.println(mifareClassicType);
             //System.out.println(mifareClassicType);
-            //System.out.println(scan.nextLine());//Data format version: 2 TODO: keep up with the data format versions
+            //System.out.println(scan.nextLine());//Data format version: 1 TODO: keep up with the data format versions
             scan.nextLine();
-            if (mifareClassicType.equals("1K")) {
-                //System.out.println(scan.nextLine());// Mifare Classic blocks, '??' means unknown data //gotta have all the keys I guess as a note
-                scan.nextLine();
-                this.blocks = new int[64][16];
-                this.sectorKeys = new SectorKey[16];
-                int sectorKeySector = 0;
-                for (int i = 0; i < blocks.length; i++) {
-                    String temp = scan.nextLine();
-                    String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
-                    //System.out.println();
-                    // for (String str : blocksStr) {
-                    //     System.out.print(str + " ");
-                    // }
-                    
-                    int[] line = new int[]{     Integer.decode("0x" + blocksStr[0]), 
-                                                Integer.decode("0x" + blocksStr[1]), 
-                                                Integer.decode("0x" + blocksStr[2]), 
-                                                Integer.decode("0x" + blocksStr[3]), 
-                                                Integer.decode("0x" + blocksStr[4]), 
-                                                Integer.decode("0x" + blocksStr[5]), 
-                                                Integer.decode("0x" + blocksStr[6]), 
-                                                Integer.decode("0x" + blocksStr[7]), 
-                                                Integer.decode("0x" + blocksStr[8]), 
-                                                Integer.decode("0x" + blocksStr[9]), 
-                                                Integer.decode("0x" + blocksStr[10]), 
-                                                Integer.decode("0x" + blocksStr[11]), 
-                                                Integer.decode("0x" + blocksStr[12]),
-                                                Integer.decode("0x" + blocksStr[13]),
-                                                Integer.decode("0x" + blocksStr[14]),
-                                                Integer.decode("0x" + blocksStr[15])};
-                        if (i % 4 == 3) {
-                            this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
-                            sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
-                            sectorKeySector++;
-                        } else {
-                            this.blocks[i] = line;
-                         }
-                }
-                this.mifareClassicType = MifareClassicType.MFC1k;
-            } else if (mifareClassicType.equals("4K")) {
-
+            signature = Constants.hexStrArrtoIntArr(scan.nextLine().substring(11).split(" "));//Signature: 
+            version = Constants.hexStrArrtoIntArr(scan.nextLine().substring(16).split(" "));//Mifare version:
+            counter = new int[3];
+            tearing = new int[3];
+            counter[0] = Integer.parseInt(scan.nextLine().substring(11));//Counter 0:
+            tearing[0] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 0:
+            counter[1] = Integer.parseInt(scan.nextLine().substring(11));//Counter 1:
+            tearing[1] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 1:
+            counter[2] = Integer.parseInt(scan.nextLine().substring(11));//Counter 2:
+            tearing[2] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 2:
+            int pagesTotal = Integer.parseInt(scan.nextLine().substring(13));//Pages total:
+            scan.nextLine();//Pages read:
+            blocks = new int[pagesTotal][4];
+            for (int i = 0; i < blocks.length; i++) {
+                String line = scan.nextLine();
+                blocks[i] = Constants.hexStrArrtoIntArr(line.substring(line.indexOf(":")+2).split(" "));
             }
+            mifareUltralightType = Constants.mfuVersionPlusPageTotalToMfuType.get(Constants.arrToHexString(version, false, true) + " " + pagesTotal);
+            System.out.println(Constants.arrToHexString(version, false, true));
+            System.out.println(pagesTotal);
+            System.out.println(mifareUltralightType);
+
+
+
+            
         } else {
             JSONParser jsonParser = new JSONParser();
 
@@ -92,25 +76,26 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
                 JSONObject nfcArray = (JSONObject) obj;
                 HashMap<String, String> hashMap = (HashMap) nfcArray.get("Card");
                 HashMap<String, String> hashMapBlocks = (HashMap) nfcArray.get("blocks");
-                String nfcStr = Constants.proxmarkFiletypeToFlipperDevice.get(nfcArray.get("FileType"));
-                this.mifareClassicType = Constants.mfcStrToMfcType.get(nfcStr + " " + Constants.sakToMifareClassicType.get(hashMap.get("SAK")));
-                if (MifareClassicType.MFC1k == mifareClassicType) {
-                    blocks = new int[64][16];
-                    for (int i = 0; i < 64; i++) {
-                        this.blocks[i] = Constants.hexStrToIntArr((String) hashMapBlocks.get("" + i));
-                    }
-                    JSONObject sectorKeysObject = (JSONObject) nfcArray.get("SectorKeys");
-                    sectorKeys = new SectorKey[16];
-                    for (int i = 0; i < 16; i++) {
-                        JSONObject sectorKeyFinal = (JSONObject) sectorKeysObject.get(""+i);
-                        sectorKeys[i] = new SectorKey(  new Key(Constants.hexStrToIntArr((String) sectorKeyFinal.get("KeyA")), KeyType.A), //Kind of avoids reading though the whole json by just reusing the id system used for importing flipper nfcs
-                                                        new Key(Constants.hexStrToIntArr((String)sectorKeyFinal.get("KeyB")), KeyType.B), 
-                                                        Constants.hexStrToIntArr((String)sectorKeyFinal.get("AccessConditions")), i);
-
-                    }
-                } else if (MifareClassicType.MFC4k == mifareClassicType) {//Also a work in progress
-
+                signature = Constants.hexStrToIntArr(hashMap.get("Signature")); 
+                version = Constants.hexStrToIntArr(hashMap.get("Version"));
+                counter = new int[3];
+                tearing = new int[3];
+                counter[0] = Constants.hexStrToInt(hashMap.get("Counter0"));//Could be binary could be hex, hard to tell (Assuming it's hex at the minute)
+                tearing[0] = Constants.hexStrToInt(hashMap.get("Tearing0"));
+                counter[1] = Constants.hexStrToInt(hashMap.get("Counter1"));
+                tearing[1] = Constants.hexStrToInt(hashMap.get("Tearing1"));
+                counter[2] = Constants.hexStrToInt(hashMap.get("Counter2"));
+                tearing[2] = Constants.hexStrToInt(hashMap.get("Tearing2"));
+                int pagesTotal = 0;
+                for (int i = 0; hashMapBlocks.containsKey(""+i); i++) {
+                    pagesTotal = i;
                 }
+                pagesTotal++;
+                blocks = new int[pagesTotal][4];
+                for (int i = 0; i < blocks.length; i++) {
+                    blocks[i] = Constants.hexStrToIntArr(hashMapBlocks.get(""+i));
+                }
+                mifareUltralightType = Constants.mfuVersionPlusPageTotalToMfuType.get(Constants.arrToHexString(version, false, true) + " " + pagesTotal);
                 reader.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -129,39 +114,52 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         PrintStream fileStream = new PrintStream(flipperNfcFile);
         fileStream.println("Filetype: Flipper NFC Device");//Placeholders maybe for future verisons
         fileStream.println("Version: 3");
-        fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic or ISO15693");
-        fileStream.println("Device type: " + Constants.mfcTypeToFlipperDevice.get(mifareClassicType));
+        fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic, FeliCa or ISO15693");
+        fileStream.println("Device type: " + Constants.mfuTypeToFlipperDevice.get(mifareUltralightType));
         fileStream.println("# UID is common for all formats");
         fileStream.println("UID: " + Constants.arrToHexString(this.getUID(), true, true));
         fileStream.println("# ISO14443 specific fields");
-        fileStream.println("ATQA: " + Constants.intToHexString(this.getATQA()[1], true) + " " + Constants.intToHexString(this.getATQA()[0], true));
-        fileStream.println("SAK: " + Constants.intToHexString(this.getSAK(), true));
-        fileStream.println("# Mifare Classic specific data");
-        if (MifareClassicType.MFC1k == mifareClassicType) {
-            fileStream.println("Mifare Classic type: 1K");
-        } else if (MifareClassicType.MFC4k == mifareClassicType) {
-            fileStream.println("Mifare Classic type: 4K");
-        }
-        fileStream.println("Data format version: 2");
-        fileStream.println("# Mifare Classic blocks, \'??\' means unknown data");
+        fileStream.println("ATQA: " + Constants.intToHexString(this.getATQA()[1], true, 2) + " " + Constants.intToHexString(this.getATQA()[0], true, 2));
+        fileStream.println("SAK: " + Constants.intToHexString(this.getSAK(), true, 2));
+        fileStream.println("# Mifare Ultralight specific data");
+        fileStream.println("Data format version: 1");
+        fileStream.println("Signature: " + Constants.arrToHexString(signature, true, true));
+        fileStream.println("Mifare version: " + Constants.arrToHexString(version, true, true));
+        fileStream.println("Counter 0: " + counter[0]);
+        fileStream.println("Tearing 0: " + Constants.intToHexString(tearing[0], true));
+        fileStream.println("Counter 1: " + counter[1]);
+        fileStream.println("Tearing 1: " + Constants.intToHexString(tearing[1], true));
+        fileStream.println("Counter 2: " + counter[2]);
+        fileStream.println("Tearing 2: " + Constants.intToHexString(tearing[2], true));
+        fileStream.println("Pages total: " + blocks.length);
+        fileStream.println("Pages read: " + blocks.length);
+
         for (int i = 0; i < blocks.length; i++) {
-            if (i % 4 == 3) {
-                fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
-            } else {
-                fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
-            }
+            fileStream.println("Page " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
         }
+        fileStream.println("Failed authentication attempts: " + "0");
+        //Placeholder as at the moment I'm figuring out how the auth attempts works 
+        //sorta figured it out counter 0 (and sometimes the others) is 
+        //incremented upwards when there is a failed attempt to auth
         fileStream.close();
     }
-    public void exportAsProxmark3Dump(String customName) throws IOException {
+    public void exportAsProxmark3Dump(String customName) throws IOException {//Keep an eye on TBO_0 and TBO_1
         JSONObject proxmarkJson = new JSONObject();
 
         proxmarkJson.put("Created", this.getCreatedBy());
-        proxmarkJson.put("FileType", "mfcard");
+        proxmarkJson.put("FileType", "mfu");
         HashMap<String, String> card = new HashMap<String, String>();
         card.put("UID", Constants.arrToHexString(this.getUID(), false, true));
-        card.put("ATQA", Constants.arrToHexString(this.getATQA(), false, true));
-        card.put("SAK", Constants.intToHexString(this.getSAK(), true));
+        card.put("Version", Constants.arrToHexString(version, false, true));
+        card.put("TBO_0", "0000");//Placeholder
+        card.put("TBO_1", "00");
+        card.put("Signature", Constants.arrToHexString(signature, false, true));
+        card.put("Counter0", Constants.intToHexString(counter[0], false, 6));
+        card.put("Tearing0", Constants.intToHexString(tearing[0], true, 2));
+        card.put("Counter1", Constants.intToHexString(counter[1], false, 6));
+        card.put("Tearing1", Constants.intToHexString(tearing[1], true, 2));
+        card.put("Counter2", Constants.intToHexString(counter[2], false, 6));
+        card.put("Tearing2", Constants.intToHexString(tearing[2], true, 2));
         proxmarkJson.put("Card", card);
 
         HashMap<String, String> blockHashMap = new HashMap<String, String>();
@@ -170,21 +168,6 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         }
 
         proxmarkJson.put("blocks", blockHashMap);
-        HashMap<String, JSONObject> sectorKeysHashMap = new HashMap<String, JSONObject>();//TODO: Basically in the right order
-        for (int i = 0; i < sectorKeys.length; i++) {
-            JSONObject jsonSectorKey = new JSONObject();
-            jsonSectorKey.put("KeyA", sectorKeys[i].a.toString());
-            jsonSectorKey.put("KeyB", sectorKeys[i].b.toString());
-            jsonSectorKey.put("AccessConditions", sectorKeys[i].accessConditionsHexString());
-
-            HashMap<String, String> temp = new HashMap<String, String>();//Maybe change later? It's sorta none sense in some ways
-            for (int g = 0; g < sectorKeys[i].accessConditionText.length; g++) {
-                temp.put(sectorKeys[i].accessConditionText[g][0], sectorKeys[i].accessConditionText[g][1]);
-            }
-            jsonSectorKey.put("AccessConditionText", temp);
-            sectorKeysHashMap.put(""+i, jsonSectorKey);
-        }
-        proxmarkJson.put("SectorKeys", sectorKeysHashMap);
 
         File proxmarkJsonFile;
         if (customName.equals("")) {

@@ -45,7 +45,7 @@ public class NFCFactory {
                 } else {
                     return new NFC(file);
                 }
-            } else if (deviceType.equals("Mifare Ultralight")) {
+            } else if (Constants.flipperDeviceToMfuType.containsKey(deviceType)) {
                 return new MifareUltralight(file);
             } else {
                 return new RFIDCard(file);

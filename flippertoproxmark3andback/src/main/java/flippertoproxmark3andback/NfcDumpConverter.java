@@ -13,14 +13,20 @@ import org.json.simple.parser.ParseException;
 import flippertoproxmark3andback.Key;
 public class NfcDumpConverter {
     
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException, ParseException {//TODO: maybe add an import and export option for binary files?
         for (String s : args) {
             System.out.println(s);
         }
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};
         //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
-        //args = new String[]{"convert", "FlipperZero-046E0D85F0E3E4-dump.json", "export", "default", "nfc"};
+        //args = new String[]{"convert", "FlipperZero-046E0D85F0E3E4-dump.json", "export", "default", "nfc"};//Mini.nfc
+        //args = new String[]{"convert", "Mini.nfc", "export", "default", "json"};
+        //args = new String[]{"convert", "Mini.nfc", "export", "default", "nfc"};
+        //args = new String[]{"convert", "Test04u.nfc", "export", "default", "nfc"};
+        //args = new String[]{"convert", "Test04u.nfc", "export", "default", "json"};//FlipperZero-04548352951190-dump.json
+        //args = new String[]{"convert", "FlipperZero-04548352951190-dump.json", "export", "default", "nfc"};//N203.nfc
+        //args = new String[]{"convert", "N203.nfc", "export", "default", "nfc"};
         runProgramWithArguments(args);
 
        
