@@ -2,7 +2,7 @@
 
 This tool is for switching nfc file formats between .nfc (Flipper NFC Format) and .json (Proxmark3 NFC Dump Format)
 
-**Currently only works for MIFARE 1k and 4k cards**
+**Works for MIFARE 1k, 4k, Mini cards and Mifare Ultralight/NTAGS**
 
 ## How to use?
 
