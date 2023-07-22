@@ -26,7 +26,7 @@ public class NfcDumpConverter {
         //args = new String[]{"convert", "Test04u.nfc", "export", "default", "nfc"};
         //args = new String[]{"convert", "Test04u.nfc", "export", "default", "json"};//FlipperZero-04548352951190-dump.json
         //args = new String[]{"convert", "FlipperZero-04548352951190-dump.json", "export", "default", "nfc"};//N203.nfc
-        //args = new String[]{"convert", "N203.nfc", "export", "default", "nfc"};
+        args = new String[]{"convert", "N203.nfc", "export", "default", "nfc"};
         runProgramWithArguments(args);
 
        
