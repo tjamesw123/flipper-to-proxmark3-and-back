@@ -24,8 +24,11 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
     private int[] counter;
     private int[] tearing;
     private MifareUltralightType mifareUltralightType;
-    //Second to last block changes based on if the tag is flipper zero or proxmark3 in origin
+    // Second to last block (password) changes based on if the tag is flipper zero or proxmark3 in origin
     // FF FF FF FF (Flipper Zero) vs. 00 00 00 00 (proxmark3)
+    // My guess is it has something to do with the password block being changed by flipper zero when saved to the file?
+    // it's unclear. According to NFC tools it's 00 00 00 00 so this is flipper being a bit weird. 
+    // should I change it back during the conversion is the question
 
     public MifareUltralight(File file) throws FileNotFoundException, org.json.simple.parser.ParseException {
         super(file);
@@ -80,7 +83,7 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
                 version = Constants.hexStrToIntArr(hashMap.get("Version"));
                 counter = new int[3];
                 tearing = new int[3];
-                counter[0] = Constants.hexStrToInt(hashMap.get("Counter0"));//Could be binary could be hex, hard to tell (Assuming it's hex at the minute)
+                counter[0] = Constants.hexStrToInt(hashMap.get("Counter0"));//Could be binary could be hex, hard to tell (Assuming it's hex at the minute) // it's hex
                 tearing[0] = Constants.hexStrToInt(hashMap.get("Tearing0"));
                 counter[1] = Constants.hexStrToInt(hashMap.get("Counter1"));
                 tearing[1] = Constants.hexStrToInt(hashMap.get("Tearing1"));
@@ -141,6 +144,7 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         //Placeholder as at the moment I'm figuring out how the auth attempts works 
         //sorta figured it out counter 0 (and sometimes the others) is 
         //incremented upwards when there is a failed attempt to auth
+        //I think it might just start at zero no matter what tag you scan possibly after looking at the code of the flipper firmware 
         fileStream.close();
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {//Keep an eye on TBO_0 and TBO_1
