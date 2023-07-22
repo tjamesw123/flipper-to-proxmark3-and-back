@@ -2,7 +2,7 @@
 
 This tool is for switching nfc file formats between .nfc (Flipper NFC Format) and .json (Proxmark3 NFC Dump Format)
 
-**Currently only works for MIFARE 1k cards**
+**Currently only works for MIFARE 1k and 4k cards**
 
 ## How to use?
 
@@ -25,6 +25,6 @@ Import and export files have to have either .nfc or .json as the file extension 
 
 ```
 Some examples would be:
-java -jar flippertoproxmark3andback.jar convert "flipper.nfc" export "proxmark3-dump.json
+java -jar flippertoproxmark3andback.jar convert "flipper.nfc" export "proxmark3-dump.json"
 java -jar flippertoproxmark3andback.jar convert "proxmark3-dump.json" export default nfc
 ```

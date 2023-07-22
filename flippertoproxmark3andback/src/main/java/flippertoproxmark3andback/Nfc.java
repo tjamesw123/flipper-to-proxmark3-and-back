@@ -2,22 +2,16 @@ package flippertoproxmark3andback;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import netscape.javascript.JSObject;
 import flippertoproxmark3andback.Constants.FileType;
-import flippertoproxmark3andback.Constants.KeyType;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import flippertoproxmark3andback.Constants.NfcType;
 public class NFC {
     //This class does only UIDs but branches out into all other types of NFC devices supported by flipper zero
     private String createdBy;
@@ -42,7 +36,7 @@ public class NFC {
         this.importFileType = Constants.fileExtensionToFileType.get(path.substring(path.indexOf(".")+1));
         FileType fileType = importFileType;
         System.out.println("NFC!");
-        System.out.println(importFileType);
+        //System.out.println(importFileType);
 
         
         if (FileType.flipper == fileType) {
@@ -97,7 +91,7 @@ public class NFC {
             flipperNfcFile = new File(customName + ".nfc");
         }
         PrintStream fileStream = new PrintStream(flipperNfcFile);
-        fileStream.println("Filetype: Flipper NFC Device");//Placeholders maybe for future verisons
+        fileStream.println("Filetype: Flipper NFC device");//Placeholders maybe for future verisons
         fileStream.println("Version: 3");
         fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic or ISO15693");
         fileStream.println("Device type: " + "UID");
