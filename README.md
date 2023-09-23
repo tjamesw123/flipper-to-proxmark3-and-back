@@ -28,3 +28,4 @@ Some examples would be:
 java -jar flippertoproxmark3andback.jar convert "flipper.nfc" export "proxmark3-dump.json"
 java -jar flippertoproxmark3andback.jar convert "proxmark3-dump.json" export default nfc
 ```
+<img width="743" alt="How to screenshot for program" src="https://github.com/tjamesw123/flipper-to-proxmark3-and-back/assets/94910672/3de79b31-d810-4bfe-be45-ab05a7574e92">
