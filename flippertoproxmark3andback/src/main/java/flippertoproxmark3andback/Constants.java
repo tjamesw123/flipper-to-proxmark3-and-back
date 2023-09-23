@@ -110,7 +110,7 @@ public static HashMap<String, MifareUltralightType> mfuVersionPlusPageTotalToMfu
     put("ISO15693", null);//Don't know what the null types are yet
     put("UID", null);
     put("Mifare Classic", "mfcard");
-    put("Mifare Ultralight", "nfu");
+    put("Mifare Ultralight", "mfu");
 }};
     public static HashMap<String, String> proxmarkFiletypeToFlipperDevice = new HashMap<String, String>() {{
     //put("null", ISO15693);//Don't know what the null types are yet
