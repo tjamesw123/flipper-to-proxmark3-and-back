@@ -17,7 +17,7 @@ public class NfcDumpConverter {
         for (String s : args) {
             System.out.println(s);
         }
-        //args = new String[]{"convert", "FlipperZero-B4CE3F1B.nfc", "export", "default", "json"};
+        //args = new String[]{"convert", "hf-mf-894F163F-dump.json", "export", "default", "nfc"};
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};
         //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "FlipperZero-046E0D85F0E3E4-dump.json", "export", "default", "nfc"};//Mini.nfc

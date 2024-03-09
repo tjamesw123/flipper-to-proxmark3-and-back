@@ -127,12 +127,12 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                 {
                     //Read JSON file
                     Object obj = jsonParser.parse(reader);
-                    //System.out.println("Work");
                     JSONObject nfcArray = (JSONObject) obj;
                     HashMap<String, String> hashMap = (HashMap) nfcArray.get("Card");
                     HashMap<String, String> hashMapBlocks = (HashMap) nfcArray.get("blocks");
-                    //System.out.println(Constants.sakToMifareClassicType.get(hashMap.get("SAK")));
-                    this.mifareClassicType = Constants.sakToMfcType.get((String)nfcArray.get("SAK"));
+
+                    System.out.println((String)hashMap.get("SAK") + "!");
+                    this.mifareClassicType = Constants.sakToMfcType.get((String)hashMap.get("SAK"));
                     if (MifareClassicType.MFC1k == this.mifareClassicType) {//Here
                         System.out.println("1K!");
                         blocks = new int[64][16];
