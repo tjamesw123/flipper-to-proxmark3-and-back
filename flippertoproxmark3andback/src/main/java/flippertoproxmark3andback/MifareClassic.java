@@ -57,7 +57,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                     
                     int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
                     if (i % 4 == 3) {
-                        this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                        this.blocks[i] = line;
                         sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
                         sectorKeySector++;
                     } else {
@@ -81,7 +81,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                     int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
                     if (sectorKeySector > 31) {
                         if (i % 16 == 15) {
-                            this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                            this.blocks[i] = line;
                             sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
                             sectorKeySector++;
                         } else {
@@ -89,7 +89,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                         }
                     } else {
                         if (i % 4 == 3) {
-                            this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                            this.blocks[i] = line;
                             sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
                             sectorKeySector++;
                         } else {
@@ -113,7 +113,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                     
                     int[] line = Constants.hexStrArrtoIntArr(blocksStr);//Trusting that this function works
                     if (i % 4 == 3) {
-                        this.blocks[i] = Constants.flipperToProxmarkFormatBlockLine(line);
+                        this.blocks[i] = line;
                         sectorKeys[sectorKeySector] = new SectorKey(this.blocks[i], sectorKeySector);
                         sectorKeySector++;
                     } else {
@@ -192,14 +192,14 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         for (int i = 0; i < this.blocks.length; i++) {
             if (i > 143 || sectors > 31) {
                 if (i % 16 == 15) {//Mifare 4k Blocks past sector 31
-                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
                     sectors++;
                 } else {
                     fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
                 }
             } else {
                 if (i % 4 == 3) {//Mifare 1k, 4k, Mini blocks before sector 32
-                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(Constants.proxmarkToFlipperFormatBlockLine(blocks[i]), true, true));
+                    fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));
                     sectors++;
                 } else {
                     fileStream.println("Block " + i + ": " + Constants.arrToHexString(blocks[i], true, true));

@@ -219,13 +219,5 @@ public static int[] hexStrArrtoIntArr(String[] hexStrs) {
     }
     return hexStrToIntArr(tempString);
 }
-public static int[] flipperToProxmarkFormatBlockLine(int[] line) {
-    int[] newLine = new int[]{line[10], line[11], line[12], line[13], line[14], line[15], line[6], line[7], line[8], line[9], line[0], line[1], line[2], line[3], line[4], line[5]};
-    return newLine;
-}
-public static int[] proxmarkToFlipperFormatBlockLine(int[] line) {
-    int[] newLine = new int[]{line[10], line[11], line[12], line[13], line[14], line[15], line[6], line[7], line[8], line[9], line[0], line[1], line[2], line[3], line[4], line[5]};
-    return newLine;
-}
 
 }
