@@ -84,7 +84,7 @@ public class NfcDumpConverter {
 
     private static void help() {
         System.out.println("This tool is for switching nfc file formats between .nfc (Flipper NFC Format) and .json (Proxmark3 NFC Dump Format)");
-        System.out.println("Currently only works for MIFARE 1k cards");
+        System.out.println("Currently only works for MIFARE 1k, 4k, Mini cards and Mifare Ultralight/NTAGS");
         System.out.println("convert \"flipper.nfc\" | \"proxmark3-dump.json\" export \"enter-file-name-here-with-extension-you-want-to-convert-to\" (Either .nfc or .json)");
         System.out.println("Also\nconvert \"flipper.nfc\" | \"proxmark3-dump.json\" export \"default\" nfc(.nfc) | json(.json)");
     }
