@@ -44,18 +44,21 @@ public class SectorKey {//Currently tuned for mifare 1k cards
         String[] invertedBinaryStrings = new String[4];
         String[] finalBinaryStrings = new String[4];
 
-        
+        //These inverted binary numbers are for memory checks
         invertedBinaryStrings[0] = "" + binaryStrings[0].charAt(7) + binaryStrings[0].charAt(3) + binaryStrings[1].charAt(7);//inverted
         invertedBinaryStrings[1] = "" + binaryStrings[0].charAt(6) + binaryStrings[0].charAt(2) + binaryStrings[1].charAt(6);
         invertedBinaryStrings[2] = "" + binaryStrings[0].charAt(5) + binaryStrings[0].charAt(1) + binaryStrings[1].charAt(5);
 
         invertedBinaryStrings[3] = "" + binaryStrings[0].charAt(4) + binaryStrings[0].charAt(0) + binaryStrings[1].charAt(4);//trailer
 
-
+        //C1, C2, C3: Block 0
         finalBinaryStrings[0] = "" + binaryStrings[1].charAt(3) + binaryStrings[2].charAt(7) + binaryStrings[2].charAt(3);//actual sequence
+        //C1, C2, C3: Block 1
         finalBinaryStrings[1] = "" + binaryStrings[1].charAt(2) + binaryStrings[2].charAt(6) + binaryStrings[2].charAt(2);
+        //C1, C2, C3: Block 2
         finalBinaryStrings[2] = "" + binaryStrings[1].charAt(1) + binaryStrings[2].charAt(5) + binaryStrings[2].charAt(1);
-
+        
+        //C1, C2, C3: Block 3
         finalBinaryStrings[3] = "" + binaryStrings[1].charAt(0) + binaryStrings[2].charAt(4) + binaryStrings[2].charAt(0);//trailer
 
         //int trailer = Integer.reverse(Integer.parseInt(invertedBinaryStrings[3], 2));

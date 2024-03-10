@@ -152,25 +152,48 @@ public static HashMap<String, MifareUltralightType> mfuVersionPlusPageTotalToMfu
     put(NfcType.mifareclassic4k, "4K");
 }};
     
-    public static HashMap<String, String> accessBitsToConditions = new HashMap<String, String>() {{
-    put("000", "read A; write A");
-    put("010", "read A");
+// AccessConditions_t MFAccessConditions[] = {
+//     {0x00, "read AB; write AB; increment AB; decrement transfer restore AB", "transport config"}, 000
+//     {0x01, "read AB; decrement transfer restore AB", "value block"}, 001
+//     {0x02, "read AB", "read/write block"}, 010
+//     {0x03, "read B; write B", "read/write block"}, 011
+//     {0x04, "read AB; write B", "read/write block"}, 100
+//     {0x05, "read B", "read/write block"}, 101
+//     {0x06, "read AB; write B; increment B; decrement transfer restore AB", "value block"}, 110
+//     {0x07, "none", "read/write block"} 111
+// };
+
+
+    public static HashMap<String, String> accessBitsToConditions = new HashMap<String, String>() {{//data blocks
+    put("000", "read AB; write AB; increment AB; decrement transfer restore AB");
+    put("001", "read AB; decrement transfer restore AB");
+    put("010", "read AB");
+    put("011", "read B; write B");
     put("100", "read AB; write B");
-    put("110", "read AB");
-    put("001", "read A; write A");
-    put("011", "read AB; write B");
-    put("101", "read AB; write B");
-    put("111", "read AB");
+    put("101", "read B");
+    put("110", "read AB; write B; increment B; decrement transfer restore AB");
+    put("111", "none");
 }};
 
-public static HashMap<String, String> trailBitsToCondition = new HashMap<String, String>() {{
-    put("000", "write A by A; read ACCESS by A; read B by A; write B by A");
+// AccessConditions_t MFAccessConditionsTrailer[] = {
+//     {0x00, "read A by A; read ACCESS by A; read/write B by A", ""},
+//     {0x01, "write A by A; read/write ACCESS by A; read/write B by A", ""},
+//     {0x02, "read ACCESS by A; read B by A", ""},
+//     {0x03, "write A by B; read ACCESS by AB; write ACCESS by B; write B by B", ""},
+//     {0x04, "write A by B; read ACCESS by AB; write B by B", ""},
+//     {0x05, "read ACCESS by AB; write ACCESS by B", ""},
+//     {0x06, "read ACCESS by AB", ""},
+//     {0x07, "read ACCESS by AB", ""}
+// };
+
+public static HashMap<String, String> trailBitsToCondition = new HashMap<String, String>() {{//Access conditions for the sector trailer
+    put("000", "read A by A; read ACCESS by A; read/write B by A");
+    put("001", "write A by A; read/write ACCESS by A; read/write B by A");
     put("010", "read ACCESS by A; read B by A");
-    put("100", "write A by B; read ACCESS by AB; write B by B");
-    put("110", "read ACCESS by AB");
-    put("001", "write A by A; read ACCESS by A; write ACCESS by A; read B by A; write B by A");
     put("011", "write A by B; read ACCESS by AB; write ACCESS by B; write B by B");
+    put("100", "write A by B; read ACCESS by AB; write B by B");
     put("101", "read ACCESS by AB; write ACCESS by B");
+    put("110", "read ACCESS by AB");
     put("111", "read ACCESS by AB");
 }};
 

@@ -211,7 +211,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {
         JSONObject proxmarkJson = new JSONObject();
-
+        
         proxmarkJson.put("Created", this.getCreatedBy());
         proxmarkJson.put("FileType", "mfcard");
         HashMap<String, String> card = new HashMap<String, String>();
