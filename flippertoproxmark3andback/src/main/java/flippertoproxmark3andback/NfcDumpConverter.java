@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import flippertoproxmark3andback.Key;
@@ -18,7 +20,8 @@ public class NfcDumpConverter {
             System.out.println(s);
         }
         //args = new String[]{"convert", "hf-mf-894F163F-dump.json", "export", "default", "nfc"};
-        //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};
+        //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};//FlipperZero-894F163F-dump.json
+        args = new String[]{"convert", "FlipperZero-894F163F-dump.json", "export", "default", "nfc"};
         //proxmark3-894F163F.nfc
         //args = new String[]{"convert", "proxmark3-894F163F.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
@@ -30,6 +33,7 @@ public class NfcDumpConverter {
         //args = new String[]{"convert", "FlipperZero-04548352951190-dump.json", "export", "default", "nfc"};//N203.nfc
         //args = new String[]{"convert", "N203.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "N215.nfc", "export", "default", "json"};
+        
         runProgramWithArguments(args);
 
        

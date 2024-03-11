@@ -97,26 +97,23 @@ public class RFIDCard extends NFC {
         
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {
-        JSONObject proxmarkJson = new JSONObject();
-
-        proxmarkJson.put("Created", this.getCreatedBy());
-        proxmarkJson.put("FileType", "rfidcard");
-        HashMap<String, String> card = new HashMap<String, String>();
-        card.put("UID", Constants.arrToHexString(this.getUID(), false, true));
-        card.put("ATQA", Constants.arrToHexString(ATQA, false, true));
-        card.put("SAK", Constants.intToHexString(SAK, true, 2));
-        proxmarkJson.put("Card", card);
-
         File proxmarkJsonFile;
         if (customName.equals("")) {
-            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + card.get("UID").toUpperCase() + "-" + "dump.json");
+            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
         } else {
             proxmarkJsonFile = new File(customName + ".json");
         }
-            
-        FileWriter fileWriter = new FileWriter(proxmarkJsonFile);
-        fileWriter.write(proxmarkJson.toJSONString());
-        fileWriter.close();
+        PrintStream fileStream = new PrintStream(proxmarkJsonFile);
+        fileStream.println("{");
+        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("\t\"FileType\": \"" + "rfidcard" + "\",");
+        fileStream.println("\t\"Card\": {");
+        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("\t\t\"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
+        fileStream.println("\t\t\"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
+        fileStream.println("\t}");
+        fileStream.println("}");
+        fileStream.close();
 
         
 

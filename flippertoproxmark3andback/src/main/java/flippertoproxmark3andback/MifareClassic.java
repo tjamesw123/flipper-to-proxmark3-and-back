@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -210,53 +211,56 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         fileStream.close();
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {
-        JSONObject proxmarkJson = new JSONObject();
-        
-        proxmarkJson.put("Created", this.getCreatedBy());
-        proxmarkJson.put("FileType", "mfcard");
-        HashMap<String, String> card = new HashMap<String, String>();
-        card.put("UID", Constants.arrToHexString(this.getUID(), false, true));
-        card.put("ATQA", Constants.arrToHexString(this.getATQA(), false, true));
-        card.put("SAK", Constants.intToHexString(this.getSAK(), true, 2));
-        proxmarkJson.put("Card", card);
-
-        HashMap<String, String> blockHashMap = new HashMap<String, String>();
-        for (int i = 0; i < blocks.length; i++) {
-            blockHashMap.put(""+i, "" + Constants.arrToHexString(blocks[i], false, true));
-        }
-
-        proxmarkJson.put("blocks", blockHashMap);
-        HashMap<String, JSONObject> sectorKeysHashMap = new HashMap<String, JSONObject>();//TODO: Basically in the right order
-        for (int i = 0; i < sectorKeys.length; i++) {
-            JSONObject jsonSectorKey = new JSONObject();
-            jsonSectorKey.put("KeyA", sectorKeys[i].a.toString());
-            jsonSectorKey.put("KeyB", sectorKeys[i].b.toString());
-            jsonSectorKey.put("AccessConditions", sectorKeys[i].accessConditionsHexString());
-
-            HashMap<String, String> temp = new HashMap<String, String>();//Maybe change later? It's sorta none sense in some ways
-            for (int g = 0; g < sectorKeys[i].accessConditionText.length; g++) {
-                temp.put(sectorKeys[i].accessConditionText[g][0], sectorKeys[i].accessConditionText[g][1]);
-            }
-            jsonSectorKey.put("AccessConditionText", temp);
-            sectorKeysHashMap.put(""+i, jsonSectorKey);
-        }
-        proxmarkJson.put("SectorKeys", sectorKeysHashMap);
-
         File proxmarkJsonFile;
         if (customName.equals("")) {
-            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + card.get("UID").toUpperCase() + "-" + "dump.json");
+            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
         } else {
             proxmarkJsonFile = new File(customName + ".json");
         }
-            
-        FileWriter fileWriter = new FileWriter(proxmarkJsonFile);
-        fileWriter.write(proxmarkJson.toJSONString());
-        fileWriter.close();
+        PrintStream fileStream = new PrintStream(proxmarkJsonFile);
+        fileStream.println("{");
+        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("\t\"FileType\": \"" + "mfc v2" + "\",");
+        fileStream.println("\t\"Card\": {");
+        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("\t\t\"ATQA\": \"" + Constants.arrToHexString(this.getATQA(), false, true) + "\",");
+        fileStream.println("\t\t\"SAK\": \"" + Constants.intToHexString(this.getSAK(), true, 2) + "\"");
+        fileStream.println("\t},");
+        fileStream.println("\t\"blocks\": {");
+        for (int i = 0; i < blocks.length; i++) {
+            if (blocks.length - 1 == i) {
+                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
+            } else {
+                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
+            }
+        }
+        fileStream.println("\t},");
 
-        
-        
+        fileStream.println("\t\"SectorKeys\": {");
+        for (int i = 0; i < sectorKeys.length; i++) {
+            fileStream.println("\t\t\"" + i + "\": {");
+            fileStream.println("\t\t\t\"KeyA\": \"" + sectorKeys[i].a.toString() + "\",");
+            fileStream.println("\t\t\t\"KeyB\": \"" + sectorKeys[i].b.toString() + "\",");
+            fileStream.println("\t\t\t\"AccessConditions\": \"" + sectorKeys[i].accessConditionsHexString() + "\",");
+            fileStream.println("\t\t\t\"" + "AccessConditionsText" + "\": {");
+            for (int g = 0; g < sectorKeys[i].accessConditionText.length; g++) {
+                if (sectorKeys[i].accessConditionText.length - 1 == g) {
+                    fileStream.println("\t\t\t\t\"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\"");
+                } else {
+                    fileStream.println("\t\t\t\t\"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\",");
+                }
+            }
+            fileStream.println("\t\t\t}");
+            if (sectorKeys.length - 1 == i) {
+                fileStream.println("\t\t}");
+            } else {
+                fileStream.println("\t\t},");
+            }
+        }
+        fileStream.println("\t}");
 
-
+        fileStream.println("}");
+        fileStream.close();
     }
         
 }

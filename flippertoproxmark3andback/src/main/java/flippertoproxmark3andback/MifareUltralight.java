@@ -148,45 +148,40 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         fileStream.close();
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {//Keep an eye on TBO_0 and TBO_1
-        JSONObject proxmarkJson = new JSONObject();
-
-        proxmarkJson.put("Created", this.getCreatedBy());
-        proxmarkJson.put("FileType", "mfu");
-        HashMap<String, String> card = new HashMap<String, String>();
-        card.put("UID", Constants.arrToHexString(this.getUID(), false, true));
-        card.put("Version", Constants.arrToHexString(version, false, true));
-        card.put("TBO_0", "0000");//Placeholder
-        card.put("TBO_1", "00");
-        card.put("Signature", Constants.arrToHexString(signature, false, true));
-        card.put("Counter0", Constants.intToHexString(counter[0], false, 6));
-        card.put("Tearing0", Constants.intToHexString(tearing[0], true, 2));
-        card.put("Counter1", Constants.intToHexString(counter[1], false, 6));
-        card.put("Tearing1", Constants.intToHexString(tearing[1], true, 2));
-        card.put("Counter2", Constants.intToHexString(counter[2], false, 6));
-        card.put("Tearing2", Constants.intToHexString(tearing[2], true, 2));
-        proxmarkJson.put("Card", card);
-
-        HashMap<String, String> blockHashMap = new HashMap<String, String>();
-        for (int i = 0; i < blocks.length; i++) {
-            blockHashMap.put(""+i, "" + Constants.arrToHexString(blocks[i], false, true));
-        }
-
-        proxmarkJson.put("blocks", blockHashMap);
-
         File proxmarkJsonFile;
         if (customName.equals("")) {
-            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + card.get("UID").toUpperCase() + "-" + "dump.json");
+            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
         } else {
             proxmarkJsonFile = new File(customName + ".json");
         }
-            
-        FileWriter fileWriter = new FileWriter(proxmarkJsonFile);
-        fileWriter.write(proxmarkJson.toJSONString());
-        fileWriter.close();
+        PrintStream fileStream = new PrintStream(proxmarkJsonFile);
+        fileStream.println("{");
+        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("\t\"FileType\": \"" + "mfu" + "\",");
+        fileStream.println("\t\"Card\": {");
+        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("\t\t\"Version\": \"" + Constants.arrToHexString(version, false, true) + "\",");
+        fileStream.println("\t\t\"TBO_0\": \"" + "0000" + "\",");
+        fileStream.println("\t\t\"TBO_1\": \"" + "00" + "\",");
+        fileStream.println("\t\t\"Signature\": \"" + Constants.arrToHexString(signature, false, true) + "\",");
+        fileStream.println("\t\t\"Counter0\": \"" + Constants.intToHexString(counter[0], false, 6) + "\",");
+        fileStream.println("\t\t\"Tearing0\": \"" + Constants.intToHexString(tearing[0], true, 2) + "\",");
+        fileStream.println("\t\t\"Counter1\": \"" + Constants.intToHexString(counter[1], false, 6) + "\",");
+        fileStream.println("\t\t\"Tearing1\": \"" + Constants.intToHexString(tearing[1], true, 2) + "\",");
+        fileStream.println("\t\t\"Counter2\": \"" + Constants.intToHexString(counter[2], false, 6) + "\",");
+        fileStream.println("\t\t\"Tearing2\": \"" + Constants.intToHexString(tearing[2], true, 2) + "\"");
+        fileStream.println("\t},");
+        fileStream.println("\t\"blocks\": {");
+        for (int i = 0; i < blocks.length; i++) {
+            if (blocks.length - 1 == i) {
+                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
+            } else {
+                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
+            }
+        }
+        fileStream.println("\t}");
 
-        
-        
-
-
+        fileStream.println("}");
+        fileStream.close();
     }
 }

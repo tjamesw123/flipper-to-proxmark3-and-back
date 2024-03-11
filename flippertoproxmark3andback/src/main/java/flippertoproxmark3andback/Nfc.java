@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.io.FileWriter;
 
 import flippertoproxmark3andback.Constants.FileType;
 
@@ -100,13 +101,21 @@ public class NFC {
         fileStream.close();
     }
     public void exportAsProxmark3Dump(String customName) throws IOException {
-        JSONObject proxmarkJson = new JSONObject();
-
-        proxmarkJson.put("Created", createdBy);
-        proxmarkJson.put("FileType", "uid");
-        HashMap<String, String> card = new HashMap<String, String>();
-        card.put("UID", Constants.arrToHexString(UID, false, true));
-        proxmarkJson.put("Card", card);
+        File proxmarkJsonFile;
+        if (customName.equals("")) {
+            proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(UID, false, true) + "-" + "dump.json");
+        } else {
+            proxmarkJsonFile = new File(customName + ".json");
+        }
+        PrintStream fileStream = new PrintStream(proxmarkJsonFile);
+        fileStream.println("{");
+        fileStream.println("\t\"Created\": \""+createdBy+"\",");
+        fileStream.println("\t\"FileType\": \"" + "uid" + "\",");
+        fileStream.println("\t\"Card\": {");
+        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(UID, false, true) + "\"");
+        fileStream.println("\t}");
+        fileStream.println("}");
+        fileStream.close();
     }
 
 }
