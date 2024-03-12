@@ -23,6 +23,8 @@ public class NfcDumpConverter {
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};//FlipperZero-894F163F-dump.json
         //args = new String[]{"convert", "FlipperZero-894F163F-dump.json", "export", "default", "nfc"};
         //proxmark3-894F163F.nfc
+        //args = new String[]{"convert", "hf-mf-894F163F-dump.json", "export", "default", "nfc"};
+        //args = new String[]{"convert", "hf-mf-894F163F-dump.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "proxmark3-894F163F.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "FlipperZero-046E0D85F0E3E4-dump.json", "export", "default", "nfc"};//Mini.nfc
