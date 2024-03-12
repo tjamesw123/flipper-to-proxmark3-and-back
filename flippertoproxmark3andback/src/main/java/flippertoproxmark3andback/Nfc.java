@@ -115,7 +115,7 @@ public class NFC {
         fileStream.println(" \"Card\": {");
         fileStream.println("   \"UID\": \"" + Constants.arrToHexString(UID, false, true) + "\"");
         fileStream.println(" }");
-        fileStream.println("}");
+        fileStream.print("}");
         fileStream.close();
         return proxmarkJsonFile;
     }

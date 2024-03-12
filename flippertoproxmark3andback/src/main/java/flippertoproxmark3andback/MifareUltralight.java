@@ -182,7 +182,7 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         }
         fileStream.println("  }");
 
-        fileStream.println("}");
+        fileStream.print("}");
         fileStream.close();
         return proxmarkJsonFile;
     }

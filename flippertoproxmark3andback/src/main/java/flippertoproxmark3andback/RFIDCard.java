@@ -113,7 +113,7 @@ public class RFIDCard extends NFC {
         fileStream.println("   \"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
         fileStream.println("   \"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
         fileStream.println(" }");
-        fileStream.println("}");
+        fileStream.print("}");
         fileStream.close();
         return proxmarkJsonFile;
 

@@ -260,7 +260,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         }
         fileStream.println("  }");
 
-        fileStream.println("}");
+        fileStream.print("}");
         fileStream.close();
         return proxmarkJsonFile;
     }
