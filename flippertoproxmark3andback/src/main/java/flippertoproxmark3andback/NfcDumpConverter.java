@@ -16,9 +16,9 @@ import flippertoproxmark3andback.Key;
 public class NfcDumpConverter {
     
     public static void main(String[] args) throws IOException, ParseException {//TODO: maybe add an import and export option for binary files?
-        for (String s : args) {
-            System.out.println(s);
-        }
+        // for (String s : args) {
+        //     System.out.println(s);
+        // }
         //args = new String[]{"convert", "hf-mf-894F163F-dump.json", "export", "default", "nfc"};
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};//FlipperZero-894F163F-dump.json
         //args = new String[]{"convert", "FlipperZero-894F163F-dump.json", "export", "default", "nfc"};
