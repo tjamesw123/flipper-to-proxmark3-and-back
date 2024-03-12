@@ -220,45 +220,45 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         }
         PrintStream fileStream = new PrintStream(proxmarkJsonFile);
         fileStream.println("{");
-        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
-        fileStream.println("\t\"FileType\": \"" + "mfc v2" + "\",");
-        fileStream.println("\t\"Card\": {");
-        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
-        fileStream.println("\t\t\"ATQA\": \"" + Constants.arrToHexString(this.getATQA(), false, true) + "\",");
-        fileStream.println("\t\t\"SAK\": \"" + Constants.intToHexString(this.getSAK(), true, 2) + "\"");
-        fileStream.println("\t},");
-        fileStream.println("\t\"blocks\": {");
+        fileStream.println("  \"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("  \"FileType\": \"" + "mfc v2" + "\",");
+        fileStream.println("  \"Card\": {");
+        fileStream.println("    \"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("    \"ATQA\": \"" + Constants.arrToHexString(this.getATQA(), false, true) + "\",");
+        fileStream.println("    \"SAK\": \"" + Constants.intToHexString(this.getSAK(), true, 2) + "\"");
+        fileStream.println("  },");
+        fileStream.println("  \"blocks\": {");
         for (int i = 0; i < blocks.length; i++) {
             if (blocks.length - 1 == i) {
-                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
+                fileStream.println("    \"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
             } else {
-                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
+                fileStream.println("    \"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
             }
         }
-        fileStream.println("\t},");
+        fileStream.println("  },");
 
-        fileStream.println("\t\"SectorKeys\": {");
+        fileStream.println("  \"SectorKeys\": {");
         for (int i = 0; i < sectorKeys.length; i++) {
-            fileStream.println("\t\t\"" + i + "\": {");
-            fileStream.println("\t\t\t\"KeyA\": \"" + sectorKeys[i].a.toString() + "\",");
-            fileStream.println("\t\t\t\"KeyB\": \"" + sectorKeys[i].b.toString() + "\",");
-            fileStream.println("\t\t\t\"AccessConditions\": \"" + sectorKeys[i].accessConditionsHexString() + "\",");
-            fileStream.println("\t\t\t\"" + "AccessConditionsText" + "\": {");
+            fileStream.println("    \"" + i + "\": {");
+            fileStream.println("      \"KeyA\": \"" + sectorKeys[i].a.toString() + "\",");
+            fileStream.println("      \"KeyB\": \"" + sectorKeys[i].b.toString() + "\",");
+            fileStream.println("      \"AccessConditions\": \"" + sectorKeys[i].accessConditionsHexString() + "\",");
+            fileStream.println("      \"" + "AccessConditionsText" + "\": {");
             for (int g = 0; g < sectorKeys[i].accessConditionText.length; g++) {
                 if (sectorKeys[i].accessConditionText.length - 1 == g) {
-                    fileStream.println("\t\t\t\t\"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\"");
+                    fileStream.println("        \"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\"");
                 } else {
-                    fileStream.println("\t\t\t\t\"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\",");
+                    fileStream.println("        \"" + sectorKeys[i].accessConditionText[g][0] + "\": \"" + sectorKeys[i].accessConditionText[g][1] + "\",");
                 }
             }
-            fileStream.println("\t\t\t}");
+            fileStream.println("      }");
             if (sectorKeys.length - 1 == i) {
-                fileStream.println("\t\t}");
+                fileStream.println("    }");
             } else {
-                fileStream.println("\t\t},");
+                fileStream.println("    },");
             }
         }
-        fileStream.println("\t}");
+        fileStream.println("  }");
 
         fileStream.println("}");
         fileStream.close();

@@ -106,13 +106,13 @@ public class RFIDCard extends NFC {
         }
         PrintStream fileStream = new PrintStream(proxmarkJsonFile);
         fileStream.println("{");
-        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
-        fileStream.println("\t\"FileType\": \"" + "rfidcard" + "\",");
-        fileStream.println("\t\"Card\": {");
-        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
-        fileStream.println("\t\t\"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
-        fileStream.println("\t\t\"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
-        fileStream.println("\t}");
+        fileStream.println(" \"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println(" \"FileType\": \"" + "rfidcard" + "\",");
+        fileStream.println(" \"Card\": {");
+        fileStream.println("   \"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("   \"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
+        fileStream.println("   \"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
+        fileStream.println(" }");
         fileStream.println("}");
         fileStream.close();
         return proxmarkJsonFile;

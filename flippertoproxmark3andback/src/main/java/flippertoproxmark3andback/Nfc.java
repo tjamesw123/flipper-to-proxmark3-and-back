@@ -110,11 +110,11 @@ public class NFC {
         }
         PrintStream fileStream = new PrintStream(proxmarkJsonFile);
         fileStream.println("{");
-        fileStream.println("\t\"Created\": \""+createdBy+"\",");
-        fileStream.println("\t\"FileType\": \"" + "uid" + "\",");
-        fileStream.println("\t\"Card\": {");
-        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(UID, false, true) + "\"");
-        fileStream.println("\t}");
+        fileStream.println(" \"Created\": \""+createdBy+"\",");
+        fileStream.println(" \"FileType\": \"" + "uid" + "\",");
+        fileStream.println(" \"Card\": {");
+        fileStream.println("   \"UID\": \"" + Constants.arrToHexString(UID, false, true) + "\"");
+        fileStream.println(" }");
         fileStream.println("}");
         fileStream.close();
         return proxmarkJsonFile;

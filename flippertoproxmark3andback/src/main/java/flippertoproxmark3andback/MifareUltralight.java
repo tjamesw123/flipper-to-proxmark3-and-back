@@ -157,30 +157,30 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         }
         PrintStream fileStream = new PrintStream(proxmarkJsonFile);
         fileStream.println("{");
-        fileStream.println("\t\"Created\": \""+this.getCreatedBy()+"\",");
-        fileStream.println("\t\"FileType\": \"" + "mfu" + "\",");
-        fileStream.println("\t\"Card\": {");
-        fileStream.println("\t\t\"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
-        fileStream.println("\t\t\"Version\": \"" + Constants.arrToHexString(version, false, true) + "\",");
-        fileStream.println("\t\t\"TBO_0\": \"" + "0000" + "\",");
-        fileStream.println("\t\t\"TBO_1\": \"" + "00" + "\",");
-        fileStream.println("\t\t\"Signature\": \"" + Constants.arrToHexString(signature, false, true) + "\",");
-        fileStream.println("\t\t\"Counter0\": \"" + Constants.intToHexString(counter[0], false, 6) + "\",");
-        fileStream.println("\t\t\"Tearing0\": \"" + Constants.intToHexString(tearing[0], true, 2) + "\",");
-        fileStream.println("\t\t\"Counter1\": \"" + Constants.intToHexString(counter[1], false, 6) + "\",");
-        fileStream.println("\t\t\"Tearing1\": \"" + Constants.intToHexString(tearing[1], true, 2) + "\",");
-        fileStream.println("\t\t\"Counter2\": \"" + Constants.intToHexString(counter[2], false, 6) + "\",");
-        fileStream.println("\t\t\"Tearing2\": \"" + Constants.intToHexString(tearing[2], true, 2) + "\"");
-        fileStream.println("\t},");
-        fileStream.println("\t\"blocks\": {");
+        fileStream.println("  \"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("  \"FileType\": \"" + "mfu" + "\",");
+        fileStream.println("  \"Card\": {");
+        fileStream.println("    \"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("    \"Version\": \"" + Constants.arrToHexString(version, false, true) + "\",");
+        fileStream.println("    \"TBO_0\": \"" + "0000" + "\",");
+        fileStream.println("    \"TBO_1\": \"" + "00" + "\",");
+        fileStream.println("    \"Signature\": \"" + Constants.arrToHexString(signature, false, true) + "\",");
+        fileStream.println("    \"Counter0\": \"" + Constants.intToHexString(counter[0], false, 6) + "\",");
+        fileStream.println("    \"Tearing0\": \"" + Constants.intToHexString(tearing[0], true, 2) + "\",");
+        fileStream.println("    \"Counter1\": \"" + Constants.intToHexString(counter[1], false, 6) + "\",");
+        fileStream.println("    \"Tearing1\": \"" + Constants.intToHexString(tearing[1], true, 2) + "\",");
+        fileStream.println("    \"Counter2\": \"" + Constants.intToHexString(counter[2], false, 6) + "\",");
+        fileStream.println("    \"Tearing2\": \"" + Constants.intToHexString(tearing[2], true, 2) + "\"");
+        fileStream.println("  },");
+        fileStream.println("  \"blocks\": {");
         for (int i = 0; i < blocks.length; i++) {
             if (blocks.length - 1 == i) {
-                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
+                fileStream.println("    \"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\"");
             } else {
-                fileStream.println("\t\t\"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
+                fileStream.println("    \"" + i + "\": \"" + Constants.arrToHexString(blocks[i], false, true) + "\",");
             }
         }
-        fileStream.println("\t}");
+        fileStream.println("  }");
 
         fileStream.println("}");
         fileStream.close();
