@@ -107,7 +107,7 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
             }
         }
     }
-    public void exportAsFlipperNfc(String customName) throws IOException {
+    public File exportAsFlipperNfc(String customName) throws IOException {
         File flipperNfcFile;
         if (customName.equals("")) {
             flipperNfcFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + ".nfc");
@@ -146,8 +146,9 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         //incremented upwards when there is a failed attempt to auth
         //I think it might just start at zero no matter what tag you scan possibly after looking at the code of the flipper firmware 
         fileStream.close();
+        return flipperNfcFile;
     }
-    public void exportAsProxmark3Dump(String customName) throws IOException {//Keep an eye on TBO_0 and TBO_1
+    public File exportAsProxmark3Dump(String customName) throws IOException {//Keep an eye on TBO_0 and TBO_1
         File proxmarkJsonFile;
         if (customName.equals("")) {
             proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
@@ -183,5 +184,6 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
 
         fileStream.println("}");
         fileStream.close();
+        return proxmarkJsonFile;
     }
 }

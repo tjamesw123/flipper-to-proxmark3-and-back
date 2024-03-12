@@ -84,7 +84,7 @@ public class NFC {
 
         }
     }
-    public void exportAsFlipperNfc(String customName) throws IOException {
+    public File exportAsFlipperNfc(String customName) throws IOException {
         File flipperNfcFile;
         if (customName.equals("")) {
             flipperNfcFile = new File(createdBy + "-" + Constants.arrToHexString(UID, false, true) + ".nfc");
@@ -99,8 +99,9 @@ public class NFC {
         fileStream.println("# UID is common for all formats");
         fileStream.println("UID: " + Constants.arrToHexString(UID, true, true));
         fileStream.close();
+        return flipperNfcFile;
     }
-    public void exportAsProxmark3Dump(String customName) throws IOException {
+    public File exportAsProxmark3Dump(String customName) throws IOException {
         File proxmarkJsonFile;
         if (customName.equals("")) {
             proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(UID, false, true) + "-" + "dump.json");
@@ -116,6 +117,7 @@ public class NFC {
         fileStream.println("\t}");
         fileStream.println("}");
         fileStream.close();
+        return proxmarkJsonFile;
     }
 
 }

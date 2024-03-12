@@ -21,7 +21,7 @@ public class NfcDumpConverter {
         }
         //args = new String[]{"convert", "hf-mf-894F163F-dump.json", "export", "default", "nfc"};
         //args = new String[]{"convert", "FlipperZero-B4CE3F1B-dump.json", "export", "default", "nfc"};//FlipperZero-894F163F-dump.json
-        args = new String[]{"convert", "FlipperZero-894F163F-dump.json", "export", "default", "nfc"};
+        //args = new String[]{"convert", "FlipperZero-894F163F-dump.json", "export", "default", "nfc"};
         //proxmark3-894F163F.nfc
         //args = new String[]{"convert", "proxmark3-894F163F.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "Mifare_4k.nfc", "export", "default", "json"};
@@ -33,6 +33,7 @@ public class NfcDumpConverter {
         //args = new String[]{"convert", "FlipperZero-04548352951190-dump.json", "export", "default", "nfc"};//N203.nfc
         //args = new String[]{"convert", "N203.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "N215.nfc", "export", "default", "json"};
+
         
         runProgramWithArguments(args);
 
@@ -65,15 +66,15 @@ public class NfcDumpConverter {
                     System.out.println(args[3] + "!");
                     String filePathOutput = args[3].replaceAll("\"", "");
                     if (Constants.fileExtensionToFileType.get(filePathOutput.substring(filePathOutput.indexOf(".")+1)) == FileType.flipper) {//uses file extension to id what type of file format to export to
-                        nfc.exportAsFlipperNfc(filePathOutput.substring(0, filePathOutput.indexOf(".")));
+                        System.out.println(nfc.exportAsFlipperNfc(filePathOutput.substring(0, filePathOutput.indexOf("."))).getName() + "!");
                     } else if (Constants.fileExtensionToFileType.get(filePathOutput.substring(filePathOutput.indexOf(".")+1)) == FileType.proxmark3) {
-                        nfc.exportAsProxmark3Dump(filePathOutput.substring(0, filePathOutput.indexOf(".")));
+                        System.out.println(nfc.exportAsProxmark3Dump(filePathOutput.substring(0, filePathOutput.indexOf("."))).getName() + "!");
                     }
                 } else if (args[3].equals("default")) {
                     if (args[4].equals("nfc")) {
-                        nfc.exportAsFlipperNfc("");
+                        System.out.println(nfc.exportAsFlipperNfc("").getName() + "!");
                     } else if (args[4].equals("json")) {
-                        nfc.exportAsProxmark3Dump("");
+                        System.out.println(nfc.exportAsProxmark3Dump("").getName() + "!");
                     } else {
                         help();
                     }

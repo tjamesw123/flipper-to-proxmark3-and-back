@@ -73,7 +73,7 @@ public class RFIDCard extends NFC {
             }
         }
     }
-    public void exportAsFlipperNfc(String customName) throws IOException {
+    public File exportAsFlipperNfc(String customName) throws IOException {
         File flipperNfcFile;
         if (customName.equals("")) {
             flipperNfcFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + ".nfc");
@@ -91,12 +91,13 @@ public class RFIDCard extends NFC {
         fileStream.println("ATQA: " + Constants.intToHexString(ATQA[1], true, 2) + " " + Constants.intToHexString(ATQA[0], true, 2));
         fileStream.println("SAK: " + Constants.intToHexString(SAK, true, 2));
         fileStream.close();
+        return flipperNfcFile;
 
 
         
         
     }
-    public void exportAsProxmark3Dump(String customName) throws IOException {
+    public File exportAsProxmark3Dump(String customName) throws IOException {
         File proxmarkJsonFile;
         if (customName.equals("")) {
             proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
@@ -114,6 +115,7 @@ public class RFIDCard extends NFC {
         fileStream.println("\t}");
         fileStream.println("}");
         fileStream.close();
+        return proxmarkJsonFile;
 
         
 

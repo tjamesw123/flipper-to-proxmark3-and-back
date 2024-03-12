@@ -243,4 +243,21 @@ public static int[] hexStrArrtoIntArr(String[] hexStrs) {
     return hexStrToIntArr(tempString);
 }
 
+public static int findCheckByte(int zeroByte, int oneByte, int twoByte, int threeByte) {
+    // System.out.println(Constants.intToHexString(Constants.hexStrToInt("88") ^ Constants.hexStrToInt("04") ^ Constants.hexStrToInt("5B") ^ Constants.hexStrToInt("C5"), true));
+    // System.out.println(Constants.intToHexString(Constants.hexStrToInt("12") ^ Constants.hexStrToInt("04") ^ Constants.hexStrToInt("5B") ^ Constants.hexStrToInt("C5"), true));
+
+    // System.out.println(Constants.intToHexString(Constants.hexStrToInt("C2") ^ Constants.hexStrToInt("A2") ^ Constants.hexStrToInt("71") ^ Constants.hexStrToInt("80"), true));
+    //BD 04 5B C5 = 12
+    //B9 5B C5
+    //E2 C5
+    //
+
+    //C2 A2 71 80
+
+    //int a = Integer
+
+    return zeroByte ^ oneByte ^ twoByte ^ threeByte;
+}
+
 }

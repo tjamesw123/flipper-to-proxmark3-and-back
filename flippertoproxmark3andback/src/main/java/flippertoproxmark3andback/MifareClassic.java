@@ -168,7 +168,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         }
     }
 
-    public void exportAsFlipperNfc(String customName) throws IOException {
+    public File exportAsFlipperNfc(String customName) throws IOException {
         File flipperNfcFile;
         if (customName.equals("")) {
             flipperNfcFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + ".nfc");
@@ -209,8 +209,9 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
             
         }
         fileStream.close();
+        return flipperNfcFile;
     }
-    public void exportAsProxmark3Dump(String customName) throws IOException {
+    public File exportAsProxmark3Dump(String customName) throws IOException {
         File proxmarkJsonFile;
         if (customName.equals("")) {
             proxmarkJsonFile = new File(this.getCreatedBy() + "-" + Constants.arrToHexString(this.getUID(), false, true) + "-" + "dump.json");
@@ -261,6 +262,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
 
         fileStream.println("}");
         fileStream.close();
+        return proxmarkJsonFile;
     }
         
 }
