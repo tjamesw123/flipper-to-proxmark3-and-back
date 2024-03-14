@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -21,26 +22,20 @@ public class NFCFactory {
         String path = file.getAbsolutePath();
         FileType fileType = Constants.fileExtensionToFileType.get(path.substring(path.indexOf(".")+1));
         if (fileType == FileType.flipper) {
-            Scanner scan = new Scanner(file);
+            ArrayList<String> lines = Constants.flipperFileToCleanedListOfLines(file);
             //Filetype: Flipper NFC Device
             //Version: 3
             // Nfc device type can be UID, Mifare Ultralight, Mifare CLassic or ISO15693 
             //createdBy = "FlipperZero";
-            for (int i = 0; i < 3; i++) {
-                //System.out.println(scan.nextLine());
-                scan.nextLine();
-            }
             // System.out.println();
-            String deviceType = scan.nextLine().substring(13);//Device type: "inserthere"
+            String deviceType = lines.get(2).substring(13);//Device type: "inserthere"
             //System.out.println(deviceType);
             //System.out.println(scan.nextLine());// UID is common for all formats
-            scan.nextLine();
-            scan.nextLine();
             //String[] UID = scan.nextLine().substring(5).split(" ");//UID: "inserthere"
             if (deviceType.equals("Mifare Classic")) {
                 return new MifareClassic(file);
             } else if (deviceType.equals("UID")) {
-                if (scan.hasNextLine()) {
+                if (lines.size() > 4) {
                     return new RFIDCard(file);
                 } else {
                     return new NFC(file);

@@ -7,6 +7,7 @@ import flippertoproxmark3andback.Constants.NfcType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,10 +34,14 @@ public class NfcDumpConverter {
         //args = new String[]{"convert", "Test04u.nfc", "export", "default", "nfc"};
         //args = new String[]{"convert", "Test04u.nfc", "export", "default", "json"};//FlipperZero-04548352951190-dump.json
         //args = new String[]{"convert", "FlipperZero-04548352951190-dump.json", "export", "default", "nfc"};//N203.nfc
-        //args = new String[]{"convert", "N203.nfc", "export", "default", "json"};
+        args = new String[]{"convert", "N203.nfc", "export", "default", "json"};
         //args = new String[]{"convert", "N215.nfc", "export", "default", "json"};
 
-        
+        //System.out.println(Constants.flipperFileToCleanedListOfLines(new File("proxmark3-894F163F.nfc")));
+        // ArrayList<String> arr1 = Constants.flipperFileToCleanedListOfLines(new File("N203.nfc"));
+        // for (String s : arr1) {
+        //     System.out.println(s);
+        // }
         runProgramWithArguments(args);
 
        

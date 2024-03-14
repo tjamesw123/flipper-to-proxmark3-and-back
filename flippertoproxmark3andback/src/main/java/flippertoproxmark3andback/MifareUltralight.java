@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -34,30 +35,25 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         super(file);
         System.out.println("MifareUltralight!");
         if (FileType.flipper == this.getImportFileType()) {
-            Scanner scan = new Scanner(file);
-            for (int i = 0; i < 9; i++) {
-                scan.nextLine();
-            }
+            ArrayList<String> lines = Constants.flipperFileToCleanedListOfLines(file);
             //System.out.println(scan.nextLine());// Mifare Ultralight specific data
-            scan.nextLine();
             //System.out.println(mifareClassicType);
             //System.out.println(scan.nextLine());//Data format version: 1 TODO: keep up with the data format versions
-            scan.nextLine();
-            signature = Constants.hexStrArrtoIntArr(scan.nextLine().substring(11).split(" "));//Signature: 
-            version = Constants.hexStrArrtoIntArr(scan.nextLine().substring(16).split(" "));//Mifare version:
+            signature = Constants.hexStrArrtoIntArr(lines.get(7).substring(11).split(" "));//Signature: 
+            version = Constants.hexStrArrtoIntArr(lines.get(8).substring(16).split(" "));//Mifare version:
             counter = new int[3];
             tearing = new int[3];
-            counter[0] = Integer.parseInt(scan.nextLine().substring(11));//Counter 0:
-            tearing[0] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 0:
-            counter[1] = Integer.parseInt(scan.nextLine().substring(11));//Counter 1:
-            tearing[1] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 1:
-            counter[2] = Integer.parseInt(scan.nextLine().substring(11));//Counter 2:
-            tearing[2] = Constants.hexStrToInt(scan.nextLine().substring(11));//Tearing 2:
-            int pagesTotal = Integer.parseInt(scan.nextLine().substring(13));//Pages total:
-            scan.nextLine();//Pages read:
+            counter[0] = Integer.parseInt(lines.get(9).substring(11));//Counter 0:
+            tearing[0] = Constants.hexStrToInt(lines.get(10).substring(11));//Tearing 0:
+            counter[1] = Integer.parseInt(lines.get(11).substring(11));//Counter 1:
+            tearing[1] = Constants.hexStrToInt(lines.get(12).substring(11));//Tearing 1:
+            counter[2] = Integer.parseInt(lines.get(13).substring(11));//Counter 2:
+            tearing[2] = Constants.hexStrToInt(lines.get(14).substring(11));//Tearing 2:
+            int pagesTotal = Integer.parseInt(lines.get(15).substring(13));//Pages total:
+            //Pages read:
             blocks = new int[pagesTotal][4];
             for (int i = 0; i < blocks.length; i++) {
-                String line = scan.nextLine();
+                String line = lines.get(17+i);
                 blocks[i] = Constants.hexStrArrtoIntArr(line.substring(line.indexOf(":")+2).split(" "));
             }
             mifareUltralightType = Constants.mfuVersionPlusPageTotalToMfuType.get(Constants.arrToHexString(version, false, true) + " " + pagesTotal);

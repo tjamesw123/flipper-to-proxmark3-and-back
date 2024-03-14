@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -33,20 +34,15 @@ public class RFIDCard extends NFC {
         super(file);
         System.out.println("RFIDCard!");
         if (FileType.flipper == this.getImportFileType()) {
-            Scanner scan = new Scanner(file);
-            for (int i = 0; i < 6; i++) {
-                scan.nextLine();
-            }
+            ArrayList<String> lines = Constants.flipperFileToCleanedListOfLines(file);
             //System.out.println(scan.nextLine());// ISO14443 specific fields
-            scan.nextLine();
 
-            String[] ATQA = scan.nextLine().substring(6).split(" ");//ATQA: inserthere
+            String[] ATQA = lines.get(4).substring(6).split(" ");//ATQA: inserthere
             // for (String s : ATQA) {
             //     System.out.println(s);
             // }
             this.ATQA = new int[]{Integer.decode("0x" + ATQA[1]), Integer.decode("0x" + ATQA[0])};//again formatted proxmark3 style
-            this.SAK = Integer.decode("0x"+scan.nextLine().substring(5));//SAK: inserthere
-            scan.close();
+            this.SAK = Integer.decode("0x"+lines.get(5).substring(5));//SAK: inserthere
         } else {
             JSONParser jsonParser = new JSONParser();
 

@@ -1,6 +1,11 @@
 package flippertoproxmark3andback;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public final class Constants {
     public enum NfcType {
@@ -258,6 +263,19 @@ public static int findCheckByte(int zeroByte, int oneByte, int twoByte, int thre
     //int a = Integer
 
     return zeroByte ^ oneByte ^ twoByte ^ threeByte;
+}
+
+public static ArrayList<String> flipperFileToCleanedListOfLines(File inputFile) throws FileNotFoundException {
+    ArrayList<String> fileLines = new ArrayList<>();
+    Scanner scn = new Scanner(inputFile);
+    while (scn.hasNextLine()) {
+        String nextLine = scn.nextLine();
+        if (nextLine.charAt(0) != '#') {
+            fileLines.add(nextLine);
+        }
+    }
+    scn.close();
+    return fileLines;
 }
 
 }

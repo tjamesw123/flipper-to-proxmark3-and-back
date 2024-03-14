@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -29,19 +30,13 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
         super(file);
         System.out.println("MifareClassic!");
         if (FileType.flipper == this.getImportFileType()) {
-            Scanner scan = new Scanner(file);
-            for (int i = 0; i < 9; i++) {
-                scan.nextLine();
-            }
+            ArrayList<String> lines = Constants.flipperFileToCleanedListOfLines(file);
             //System.out.println(scan.nextLine());// Mifare Classic specific data
-            scan.nextLine();
-            String mifareClassicTypeStr = scan.nextLine().substring(21);
+            String mifareClassicTypeStr = lines.get(6).substring(21);
             //System.out.println(mifareClassicTypeStr);
             //System.out.println(mifareClassicType);
             //System.out.println(scan.nextLine());//Data format version: 2 TODO: keep up with the data format versions
-            scan.nextLine();
             //System.out.println(scan.nextLine());// Mifare Classic blocks, '??' means unknown data //gotta have all the keys I guess as a note
-            scan.nextLine();
             if (mifareClassicTypeStr.equals("1K")) {
                 int sectorKeySector = 0;
                 this.blocks = new int[64][16];
@@ -49,7 +44,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                 this.sectorKeys = new SectorKey[16];
                 this.mifareClassicType = MifareClassicType.MFC1k;
                 for (int i = 0; i < blocks.length; i++) {
-                    String temp = scan.nextLine();
+                    String temp = lines.get(i+8);
                     String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
                     //System.out.println();
                     // for (String str : blocksStr) {
@@ -72,7 +67,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                 this.sectorKeys = new SectorKey[40];
                 this.mifareClassicType = MifareClassicType.MFC4k;
                 for (int i = 0; i < blocks.length; i++) {
-                    String temp = scan.nextLine();
+                    String temp = lines.get(i+8);
                     String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
                     //System.out.println();
                     // for (String str : blocksStr) {
@@ -105,7 +100,7 @@ public class MifareClassic extends RFIDCard {//Can be 1k or 4k
                 this.sectorKeys = new SectorKey[5];
                 this.mifareClassicType = MifareClassicType.MFCMini;
                 for (int i = 0; i < blocks.length; i++) {
-                    String temp = scan.nextLine();
+                    String temp = lines.get(i+8);
                     String[] blocksStr = temp.substring(temp.indexOf(":")+2).split(" ");
                     //System.out.println();
                     // for (String str : blocksStr) {
