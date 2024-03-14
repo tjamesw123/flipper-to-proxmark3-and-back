@@ -116,12 +116,12 @@ public class MifareUltralight extends RFIDCard {//TODO: NEEDS TO BE WORKED ON
         }
         PrintStream fileStream = new PrintStream(flipperNfcFile);
         fileStream.println("Filetype: Flipper NFC device");//Placeholders maybe for future verisons
-        fileStream.println("Version: 3");
-        fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic, FeliCa or ISO15693");
+        fileStream.println("Version: 4");
+        fileStream.println("# Device type can be ISO14443-3A, ISO14443-3B, ISO14443-4A, ISO14443-4B, ISO15693-3, FeliCa, NTAG/Ultralight, Mifare Classic, Mifare DESFire, SLIX, ST25TB, EMV");
         fileStream.println("Device type: " + Constants.mfuTypeToFlipperDevice.get(mifareUltralightType));
         fileStream.println("# UID is common for all formats");
         fileStream.println("UID: " + Constants.arrToHexString(this.getUID(), true, true));
-        fileStream.println("# ISO14443 specific fields");
+        fileStream.println("# ISO14443-3A specific data");
         fileStream.println("ATQA: " + Constants.intToHexString(this.getATQA()[1], true, 2) + " " + Constants.intToHexString(this.getATQA()[0], true, 2));
         fileStream.println("SAK: " + Constants.intToHexString(this.getSAK(), true, 2));
         fileStream.println("# Mifare Ultralight specific data");

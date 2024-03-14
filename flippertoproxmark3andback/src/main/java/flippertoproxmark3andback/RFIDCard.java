@@ -82,8 +82,8 @@ public class RFIDCard extends NFC {
         }
         PrintStream fileStream = new PrintStream(flipperNfcFile);
         fileStream.println("Filetype: Flipper NFC device");//Placeholders maybe for future verisons
-        fileStream.println("Version: 3");
-        fileStream.println("# Nfc device type can be UID, Mifare Ultralight, Mifare Classic or ISO15693");
+        fileStream.println("Version: 4");
+        fileStream.println("# Device type can be ISO14443-3A, ISO14443-3B, ISO14443-4A, ISO14443-4B, ISO15693-3, FeliCa, NTAG/Ultralight, Mifare Classic, Mifare DESFire, SLIX, ST25TB, EMV");
         fileStream.println("Device type: " + "ISO14443");
         fileStream.println("# UID is common for all formats");
         fileStream.println("UID: " + Constants.arrToHexString(this.getUID(), true, true));
@@ -106,13 +106,13 @@ public class RFIDCard extends NFC {
         }
         PrintStream fileStream = new PrintStream(proxmarkJsonFile);
         fileStream.println("{");
-        fileStream.println(" \"Created\": \""+this.getCreatedBy()+"\",");
-        fileStream.println(" \"FileType\": \"" + "rfidcard" + "\",");
-        fileStream.println(" \"Card\": {");
-        fileStream.println("   \"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
-        fileStream.println("   \"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
-        fileStream.println("   \"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
-        fileStream.println(" }");
+        fileStream.println("  \"Created\": \""+this.getCreatedBy()+"\",");
+        fileStream.println("  \"FileType\": \"" + "rfidcard" + "\",");
+        fileStream.println("  \"Card\": {");
+        fileStream.println("    \"UID\": \"" + Constants.arrToHexString(this.getUID(), false, true) + "\",");
+        fileStream.println("    \"ATQA\": \"" + Constants.arrToHexString(ATQA, false, true) + "\",");
+        fileStream.println("    \"SAK\": \"" + Constants.intToHexString(SAK, true, 2) + "\"");
+        fileStream.println("  }");
         fileStream.print("}");
         fileStream.close();
         return proxmarkJsonFile;
